@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      changes: ${{ steps.changes.outputs }}
+      changed-php-datatypes: ${{ steps.changes.outputs.php-datatypes }}
     # The type of runner that the job will run on
 
 
@@ -31,7 +31,7 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
   build_datatypes:
-    if: needs.build.outputs.changes.php-datatypes == 'true'
+    if: needs.build.outputs.changes.changed-php-datatypes == 'true'
     needs: build
     runs-on: ubuntu-latest
     steps:
