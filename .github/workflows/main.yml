@@ -29,6 +29,7 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
   build_datatypes:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Changed datatypes
