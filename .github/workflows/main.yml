@@ -31,7 +31,7 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
   build_datatypes:
-    if: needs.build.outputs.changes.changed-php-datatypes == 'true'
+    if: needs.build.outputs.changed-php-datatypes == 'true'
     needs: build
     runs-on: ubuntu-latest
     steps:
