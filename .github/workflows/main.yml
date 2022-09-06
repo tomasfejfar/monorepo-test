@@ -45,12 +45,19 @@ jobs:
         run: |
           composer install
           composer ci
+  dump_results:
+    needs:
+      - build_datatypes
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{toJson(needs.build_datatypes.result)}}
+
   test_results:
     needs:
         - build_datatypes
     runs-on: ubuntu-latest
     if: |
-        contains(fromJson('["success"]'), needs.build_datatypes.conclusion)
+        contains(fromJson('["success"]'), needs.build_datatypes.result)
     steps:
       - name: Tests passed
         run: echo "Tests passed"
