@@ -50,7 +50,7 @@ jobs:
         - build_datatypes
     runs-on: ubuntu-latest
     if: |
-        contains(['success'],needs.build_datatypes.conclusion) )
+        contains(fromJson('["success"]'), needs.build_datatypes.conclusion) )
     steps:
       - name: Tests passed
         run: echo "Tests passed"
