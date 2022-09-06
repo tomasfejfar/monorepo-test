@@ -54,3 +54,16 @@ jobs:
     steps:
       - name: Tests passed
         run: echo "Tests passed"
+  monorepo_split:
+    needs: test_results
+    runs-on: ubuntu-latest
+    steps:
+      - uses: webfactory/ssh-agent@fc49353b67b2b7c1e0e6a600572d01a69f2672dd
+        with:
+          ssh-private-key: ${{ secrets.PHP_DATATYPES_SSH_PRIVATE_KEY }}
+      - name: Split monorepo
+        run: |
+          git clone https://github.com/shopsys/monorepo-tools ~/monorepo-tools
+          git remote add php-datatypes git@github.com:tomasfejfar/php-datatypes.git
+          git fetch --tags php-datatypes
+          ~/monorepo-tools/monorepo_split.sh php-datatypes:packages/php-datatypes
