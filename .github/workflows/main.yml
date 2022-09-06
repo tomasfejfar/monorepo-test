@@ -45,7 +45,7 @@ jobs:
         env:
           phpVersion: ${{ matrix.php-versions }}
         run: |
-          if [ $phpVersion == "8.0" ]; then exit 1;
+          if [ $phpVersion == "8.0" ]; then exit 1; fi
           composer install
           composer ci
   dump_results:
