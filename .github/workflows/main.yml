@@ -12,22 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       changed-php-datatypes: ${{ steps.changes.outputs.php-datatypes }}
-    # The type of runner that the job will run on
-
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
       - uses: dorny/paths-filter@v2
         id: changes
         with:
           filters: |
             php-datatypes:
               - 'packages/php-datatypes/**'
-
-      # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
   build_datatypes:
@@ -53,3 +45,14 @@ jobs:
         run: |
           composer install
           composer ci
+  test_results:
+    needs:
+        - build_datatypes
+    runs-on: ubuntu-latest
+    if: |
+        and(
+          in(needs.build_datatypes.result, 'Succeeded', 'Skipped'),
+        )
+    steps:
+      - name: Tests passed
+      - run: echo "Tests passed"
