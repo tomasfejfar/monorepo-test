@@ -42,9 +42,12 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
       - name: Tests
+        env:
+          phpVersion: ${{ matrix.php-versions }}
         run: |
           composer install
           composer ci
+          if [ $phpVersion == "8.0" ]; then exit 1
   dump_results:
     needs:
       - build_datatypes
@@ -65,11 +68,14 @@ jobs:
     needs: test_results
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - uses: webfactory/ssh-agent@fc49353b67b2b7c1e0e6a600572d01a69f2672dd
         with:
           ssh-private-key: ${{ secrets.PHP_DATATYPES_SSH_PRIVATE_KEY }}
       - name: Split monorepo
         run: |
+          set -Eeuo pipefail
           git clone https://github.com/shopsys/monorepo-tools ~/monorepo-tools
           git remote add php-datatypes git@github.com:tomasfejfar/php-datatypes.git
           git fetch --tags php-datatypes
