@@ -50,9 +50,7 @@ jobs:
         - build_datatypes
     runs-on: ubuntu-latest
     if: |
-        and(
-          in(needs.build_datatypes.result, 'Succeeded', 'Skipped'),
-        )
+        contains(['success'],needs.build_datatypes.conclusion) )
     steps:
       - name: Tests passed
         run: echo "Tests passed"
