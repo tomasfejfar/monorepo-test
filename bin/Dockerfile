@@ -8,4 +8,9 @@ RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-f
         git-filter-repo \
         vim \
             openssh-client \
+    && mkdir -r ~/.ssh/known_hosts \
+    && chmod 700 ~/.ssh/ \
+    && chmod 600 ~/.ssh/* \
+    && chown -R ${USER} ~/.ssh/ \
+    && chgrp -R ${USER} ~/.ssh/ \
     && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
