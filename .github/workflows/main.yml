@@ -79,4 +79,4 @@ jobs:
         run: |
           ssh-add -l
           docker build -t monorepo-tools ./bin
-          docker run -v $PWD:/monorepo -w /monorepo -v $(dirname $SSH_AUTH_SOCK) -e SSH_AUTH_SOCK=$SSH_AUTH_SOCK monorepo-tools bin/split-repo.sh . ${{ matrix.repo }} ${{ matrix.path }} ${{ matrix.name }}/
+          docker run -v $PWD:/monorepo -w /monorepo -v $SSH_AUTH_SOCK:/ssh-agent -v ~/.ssh/known_hosts:/root/.ssh/known_hosts -e SSH_AUTH_SOCK=/ssh-agent monorepo-tools bin/split-repo.sh . ${{ matrix.repo }} ${{ matrix.path }} ${{ matrix.name }}/
