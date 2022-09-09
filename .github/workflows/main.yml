@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  # This workflow contains a single job called "build"
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      changed-php-datatypes: ${{ steps.changes.outputs.php-datatypes }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            php-datatypes:
+              - 'packages/php-datatypes/**'
+      - name: Run a one-line script
+        run: echo Hello, world!
+  build_datatypes:
+    if: needs.build.outputs.changed-php-datatypes == 'true'
+    needs: build
+    runs-on: ${{ matrix.operating-system }}
+    defaults:
+      run:
+        working-directory: ./packages/php-datatypes
+    strategy:
+      matrix:
+        operating-system: [ 'ubuntu-latest' ]
+        php-versions: [ '7.4','8.0','8.1' ]
+        phpunit-versions: [ 'latest' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+      - name: Tests
+        env:
+          phpVersion: ${{ matrix.php-versions }}
+        run: |
+          # if [ $phpVersion == "8.0" ]; then exit 1; fi
+          composer install
+          composer ci
+  dump_results:
+    needs:
+      - build_datatypes
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{toJson(needs.build_datatypes.result)}}
+
+  test_results:
+    needs:
+        - build_datatypes
+    runs-on: ubuntu-latest
+    if: |
+        contains(fromJson('["success"]'), needs.build_datatypes.result)
+    steps:
+      - name: Tests passed
+        run: echo "Tests passed"
+  monorepo_split:
+    needs: test_results
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: 'php-datatypes'
+            path: 'packages/php-datatypes'
+            repo: 'git@github.com:tomasfejfar/php-datatypes.git'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: webfactory/ssh-agent@fc49353b67b2b7c1e0e6a600572d01a69f2672dd
+        with:
+          ssh-private-key: ${{ secrets.PHP_DATATYPES_SSH_PRIVATE_KEY }}
+      - name: Split monorepo
+        run: |
+          docker build -t monorepo-tools ./bin
+          docker run -it -v $PWD:/monorepo -w /monorepo
+          bin/split-repo.sh . ${{ matrix.repo }} ${{ matrix.path }} ${{ matrix.name }}/
