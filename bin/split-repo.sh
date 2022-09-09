@@ -56,7 +56,7 @@ git update-ref -d refs/tags/SKIP
 
 echo ">> Push to target repo '${TARGET_REPO_URL}'"
 git remote add split "${TARGET_REPO_URL}"
-ssh-add -l
+git --log --oneline --all --graph
 git push -v split --mirror
 
 echo ">> Done"
