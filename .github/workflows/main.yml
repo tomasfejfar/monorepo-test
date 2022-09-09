@@ -11,57 +11,57 @@ on:
 jobs:
 
   # This workflow contains a single job called "build"
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      changed-php-datatypes: ${{ steps.changes.outputs.php-datatypes }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            php-datatypes:
-              - 'packages/php-datatypes/**'
-      - name: Run a one-line script
-        run: echo Hello, world!
-  build_datatypes:
-    #if: needs.build.outputs.changed-php-datatypes == 'true'
-    needs: build
-    runs-on: ${{ matrix.operating-system }}
-#    defaults:
-#      run:
-#         working-directory: ./packages/php-datatypes
-    strategy:
-      matrix:
-        operating-system: [ 'ubuntu-latest' ]
-#        php-versions: [ '7.4','8.0','8.1' ]
-        phpunit-versions: [ 'latest' ]
-    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Setup PHP
-#        uses: shivammathur/setup-php@v2
+#  build:
+#    runs-on: ubuntu-latest
+#    outputs:
+#      changed-php-datatypes: ${{ steps.changes.outputs.php-datatypes }}
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: dorny/paths-filter@v2
+#        id: changes
 #        with:
-#          php-version: ${{ matrix.php-versions }}
-      - name: Tests
-        env:
-          phpVersion: ${{ matrix.php-versions }}
-        run: |
-          exit 0
-          composer install
-          composer ci
-  test_results:
-    needs:
-        - build_datatypes
-    runs-on: ubuntu-latest
-    if: |
-        contains(fromJson('["success"]'), needs.build_datatypes.result)
-    steps:
-      - name: Tests passed
-        run: echo "Tests passed"
+#          filters: |
+#            php-datatypes:
+#              - 'packages/php-datatypes/**'
+#      - name: Run a one-line script
+#        run: echo Hello, world!
+#  build_datatypes:
+#    #if: needs.build.outputs.changed-php-datatypes == 'true'
+#    needs: build
+#    runs-on: ${{ matrix.operating-system }}
+##    defaults:
+##      run:
+##         working-directory: ./packages/php-datatypes
+#    strategy:
+#      matrix:
+#        operating-system: [ 'ubuntu-latest' ]
+##        php-versions: [ '7.4','8.0','8.1' ]
+#        phpunit-versions: [ 'latest' ]
+#    steps:
+##      - name: Checkout
+##        uses: actions/checkout@v3
+##      - name: Setup PHP
+##        uses: shivammathur/setup-php@v2
+##        with:
+##          php-version: ${{ matrix.php-versions }}
+#      - name: Tests
+#        env:
+#          phpVersion: ${{ matrix.php-versions }}
+#        run: |
+#          exit 0
+#          composer install
+#          composer ci
+#  test_results:
+#    needs:
+#        - build_datatypes
+#    runs-on: ubuntu-latest
+#    if: |
+#        contains(fromJson('["success"]'), needs.build_datatypes.result)
+#    steps:
+#      - name: Tests passed
+#        run: echo "Tests passed"
   monorepo_split:
-    needs: test_results
+#    needs: test_results
     runs-on: ubuntu-latest
     strategy:
       matrix:
