@@ -10,5 +10,4 @@ RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-f
             openssh-client \
     && mkdir -p ~/.ssh || true \
     && chmod 700 ~/.ssh/ \
-    && chmod 600 ~/.ssh/* \
     && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
