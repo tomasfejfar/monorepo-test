@@ -51,13 +51,6 @@ jobs:
           # if [ $phpVersion == "8.0" ]; then exit 1; fi
           composer install
           composer ci
-  dump_results:
-    needs:
-      - build_datatypes
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo ${{toJson(needs.build_datatypes.result)}}
-
   test_results:
     needs:
         - build_datatypes
