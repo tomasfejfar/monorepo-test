@@ -78,4 +78,10 @@ jobs:
       - name: Split monorepo
         run: |
           docker build -t monorepo-tools ./bin
-          docker run -v $PWD:/monorepo -w /monorepo monorepo-tools bin/split-repo.sh . ${{ matrix.repo }} ${{ matrix.path }} ${{ matrix.name }}/
+          docker run \
+            -v $PWD:/monorepo \
+            -w /monorepo \
+            -v $(dirname $SSH_AUTH_SOCK) \
+            -e SSH_AUTH_SOCK=$SSH_AUTH_SOCK \
+            monorepo-tools \ 
+            bin/split-repo.sh . ${{ matrix.repo }} ${{ matrix.path }} ${{ matrix.name }}/
