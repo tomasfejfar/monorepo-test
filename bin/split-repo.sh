@@ -14,8 +14,6 @@ if [[ -z ${1+x} || -z ${2+x} || -z ${3+x} || -z ${4+x} || -z ${5+x} ]]; then
   exit 1
 fi
 
-. functions.sh
-
 SOURCE_REPO_PATH="${1}"
 TARGET_REPO_URL="${2}"
 LIB_PATH="${3}"
