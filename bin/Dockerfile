@@ -7,7 +7,9 @@ RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-f
         git \
         git-filter-repo \
         vim \
-            openssh-client \
+        openssh-client \
+        python3-pip \
     && mkdir -p ~/.ssh || true \
     && chmod 700 ~/.ssh/ \
-    && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+    && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts \
+    && pip install packaging
